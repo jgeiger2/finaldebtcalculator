@@ -21,8 +21,7 @@ class WholePage extends React.Component {
                 <h1>Debt Calculator</h1>
                 <div className={style.wrapper}>
                     <Calculator handlePayment={this.handlePayment } />
-                    <PaymentHistory />
-                </div>
+``                </div>
             </div>
             )
         }

@@ -3,6 +3,7 @@ import s from '../PaymentHistory/PaymentHistory.module.css';
 
 class PaymentHistory extends React.Component {
     render() {
+        const {paymentsList} = this.props
         return (
             <div>
                 <div className={s.history}>
@@ -24,9 +25,12 @@ class PaymentHistory extends React.Component {
                                         <h5>Remaining Balance</h5>
                                     </td>
                                 </tr>
+                                {paymentsList.map((item, i) => (
+                                    <tr key={item.numOfPayments}>
+                                        <td>{i + 1}</td> <td>{item.principal}</td> <td>{item.interest}</td> <td>{item.balance}</td>
+                                    </tr>))}
                             </tbody>
                         </table>
-                        <h6>{this.handlePayment}</h6>
                     </div>
                 </div>
                 

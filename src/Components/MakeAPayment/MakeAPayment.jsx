@@ -23,7 +23,7 @@ class MakeAPayment extends React.Component {
                 <h3>Payment Amount</h3>
                 <input onChange={this.handleChange}type="number" placeholder='Enter whole number' style={{ background: "white", height: "20px" }} />
                 <h4>MUST pay at least MIN</h4>
-                <button onClick={() => this.props.onClick(this.state.paymentAmount) } style={{ backgroundColor: 'limeGreen', padding: '10px 20px' }}>
+                <button onClick={ this.props.onClick(this.state.paymentAmount) } style={{ backgroundColor: 'limeGreen', padding: '10px 20px' }}>
                     SUBMIT<br></br>PAYMENT
                 </button>
             </div>
