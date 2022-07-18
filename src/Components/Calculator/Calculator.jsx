@@ -15,6 +15,7 @@ constructor() {
     this.state = {
     totalDebtAmount: 0,
     interestRate: 0,
+    minimumInterest: 0,
     principal: 0,
     monthlyPayment: 0,
     paymentAmount: 0,
@@ -29,6 +30,7 @@ calcMinInt = (interestRate) =>
 handleTotalAmount = ({ target: { value } }) => {
     console.log(`The value is now: ${value}`);
     this.setState({ totalDebtAmount: parseInt(value) });
+    this.handleInterestHelper(this.state.interestRate);
 };
 
 handlePrincipal = (totalDebtAmount) => {
@@ -36,13 +38,17 @@ handlePrincipal = (totalDebtAmount) => {
     this.setState({ principal: +minimumPrincipal.toFixed(2) });
 };
 
-handleInterest = ({ target: { value } }) => {
+handleInterestHelper = (value) => {
     const minimumInterest = this.calcMinInt(parseFloat(value));
     console.log(this.state.totalDebtAmount);
-    this.setState({ interestRate: +minimumInterest.toFixed(2) });
+    this.setState({ interestRate: value });
+    this.setState({ minimumInterest: minimumInterest.toFixed(2) });
     this.handlePrincipal(this.state.totalDebtAmount);
     this.handleMonthlyPayment(minimumInterest, this.state.principal);
-};
+}
+
+handleInterest = ({ target: { value } }) => this.handleInterestHelper(value);
+
 
 handleMonthlyPayment = (minimumInterest, minimumPrincipal) => {
     const monthlyPayment = +minimumInterest + minimumPrincipal;
@@ -54,17 +60,35 @@ handleRemainingBalance = (totalDebtAmount, paymentAmount) => {
     this.setState({ remainingBalance: +remainingBalance.toFixed(2) });
 };
 
+
 handlePaymentAmount = (value) => {
-    console.log(value);
+    console.log(`handlePaymentAmount(${value})`);
+    if (value < this.state.monthlyPayment) {
+        // TODO: Add error message
+        return;
+    }
+    // Owed:     10000
+    // Interest: +  83 (This is how much we pay for the loan)
+    // Payment:  - 183 (Reduces how much we owe)
+    // Owed:      9900
+    // Principle: (Original Loan Amount) - Owed
+    // Principle: 1000 - 900 = 100
+    // Interest: Owed * InterestRate
+    console.log(this.state.totalDebtAmount, this.state.interestRate);
+    const interest = this.state.minimumInterest;
+    const originalLoanAmount = this.state.totalDebtAmount;
+    const remainingBalance = Number(this.state.totalDebtAmount) + Number(interest) - Number(value);
+    const principlePaid = originalLoanAmount - remainingBalance;
     const paymentInfo = {
     numOfPayments: 0,
-    principal: this.state.principal,
-    interest: this.state.interestRate,
-    balance: this.state.remainingBalance,
+    principal: principlePaid.toFixed(2),
+    interest: interest,
+    balance: remainingBalance.toFixed(2),
     };
     this.setState({
-    paymentAmount: parseInt(value),
-    paymentList: [...this.state.paymentList, paymentInfo],
+        totalDebtAmount: remainingBalance,
+        paymentAmount: parseInt(value),
+        paymentList: [...this.state.paymentList, paymentInfo],
     });
     // this.props.handlePayment
 };
@@ -87,10 +111,10 @@ render() {
                 handleInterest={this.handleInterest}
                 interestRate={this.state.interestRate}
                 />
-                <MakeAPayment onClick={() => this.handlePaymentAmount} />
+                <MakeAPayment onClick={this.handlePaymentAmount} debtAmount={this.state.totalDebtAmount}/>
             </div>
             <div className={style.displayNums}>
-                <MinInterest interestRate={this.state.interestRate} />
+                <MinInterest minimumInterest={this.state.minimumInterest} />
                 <MinPrincipal principal={this.state.principal} />
                 <MinPayments monthlyPayment={this.state.monthlyPayment} />
             </div>

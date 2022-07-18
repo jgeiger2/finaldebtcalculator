@@ -7,11 +7,11 @@ class MinInterest extends React.Component {
     }
     
     render() {
-        const {interestRate} = this.props
+        const {minimumInterest} = this.props
         return (
             <div>
                 <h2>Interest</h2>
-                <h3 style={{textAlign: "center", fontSize: "3rem"}}>{interestRate}</h3>
+                <h3 style={{textAlign: "center", fontSize: "3rem"}}>{minimumInterest}</h3>
             </div>
         )
     }
