@@ -51,8 +51,13 @@ handleInterest = ({ target: { value } }) => this.handleInterestHelper(value);
 
 
 handleMonthlyPayment = (minimumInterest, minimumPrincipal) => {
-    const monthlyPayment = +minimumInterest + minimumPrincipal;
-    this.setState({ monthlyPayment: +monthlyPayment.toFixed(2) });
+    if (this.state.totalDebtAmount <= 100) {
+        const monthlyPayment = this.state.totalDebtAmount * 1 + this.state.totalDebtAmount * .01;
+        this.setState({ monthlyPayment: +monthlyPayment.toFixed(2) });
+    } else {
+        const monthlyPayment = +minimumInterest + minimumPrincipal;
+        this.setState({ monthlyPayment: +monthlyPayment.toFixed(2) });
+    }
 };
 
 handleRemainingBalance = (totalDebtAmount, paymentAmount) => {
