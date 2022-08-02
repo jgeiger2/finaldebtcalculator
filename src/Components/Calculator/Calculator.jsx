@@ -24,8 +24,13 @@ constructor() {
     };
 }
 
-calcMinInt = (interestRate) =>
-    (interestRate / 100 / 12) * this.state.totalDebtAmount;
+calcMinInt = (interestRate) => {
+    console.log(interestRate)
+    console.log(    (interestRate / 100 / 12) * this.state.totalDebtAmount
+    )
+    return (interestRate / 100 / 12) * this.state.totalDebtAmount;
+
+}
 
 handleTotalAmount = ({ target: { value } }) => {
     console.log(`The value is now: ${value}`);
@@ -33,18 +38,19 @@ handleTotalAmount = ({ target: { value } }) => {
     this.handleInterestHelper(this.state.interestRate);
 };
 
-handlePrincipal = (totalDebtAmount) => {
+handlePrincipal = (totalDebtAmount, minimumInterest) => {
     const minimumPrincipal = totalDebtAmount * 0.01;
-    this.setState({ principal: +minimumPrincipal.toFixed(2) });
+    this.setState({ principal: +minimumPrincipal.toFixed(2) }, () => this.handleMonthlyPayment(minimumInterest, this.state.principal));
 };
 
 handleInterestHelper = (value) => {
     const minimumInterest = this.calcMinInt(parseFloat(value));
     console.log(this.state.totalDebtAmount);
     this.setState({ interestRate: value });
-    this.setState({ minimumInterest: minimumInterest.toFixed(2) });
-    this.handlePrincipal(this.state.totalDebtAmount);
-    this.handleMonthlyPayment(minimumInterest, this.state.principal);
+    this.setState({ minimumInterest: minimumInterest.toFixed(2) }, () => this.handlePrincipal(this.state.totalDebtAmount, this.state.minimumInterest));
+    // this.handlePrincipal(this.state.totalDebtAmount);
+    console.log("helper", this.state.principal, minimumInterest)
+    // this.handleMonthlyPayment(minimumInterest, this.state.principal);
 }
 
 handleInterest = ({ target: { value } }) => this.handleInterestHelper(value);
@@ -52,7 +58,7 @@ handleInterest = ({ target: { value } }) => this.handleInterestHelper(value);
 
 handleMonthlyPayment = (minimumInterest, minimumPrincipal) => {
     if (this.state.totalDebtAmount <= 100) {
-        const monthlyPayment = this.state.totalDebtAmount * 1 + this.state.totalDebtAmount * .01;
+        const monthlyPayment = this.state.totalDebtAmount * 1 + this.state.totalDebtAmount * 0.01;
         this.setState({ monthlyPayment: +monthlyPayment.toFixed(2) });
     } else {
         const monthlyPayment = +minimumInterest + minimumPrincipal;
