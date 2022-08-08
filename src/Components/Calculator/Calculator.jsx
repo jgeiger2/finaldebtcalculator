@@ -4,7 +4,7 @@ import InterestRate from "../InterestRate/InterestRate";
 import MakeAPayment from "../MakeAPayment/MakeAPayment";
 import TotalDebtAmount from "../TotalDebtAmount/TotalDebtAmount";
 import MinInterest from "../MinInterest/MinInterest";
-import MinPrincipal from "../MinPrincipal/MinPrincipal";
+import MinPrinciple from "../MinPrinciple/MinPrinciple";
 import MinPayments from "../MinPayment/MinPayment";
 import PaymentHistory from "../PaymentHistory/PaymentHistory";
 // import './index.css';
@@ -16,7 +16,7 @@ constructor() {
     totalDebtAmount: 0,
     interestRate: 0,
     minimumInterest: 0,
-    principal: 0,
+    principle: 0,
     monthlyPayment: 0,
     paymentAmount: 0,
     paymentList: [],
@@ -38,30 +38,30 @@ handleTotalAmount = ({ target: { value } }) => {
     this.handleInterestHelper(this.state.interestRate);
 };
 
-handlePrincipal = (totalDebtAmount, minimumInterest) => {
-    const minimumPrincipal = totalDebtAmount * 0.01;
-    this.setState({ principal: +minimumPrincipal.toFixed(2) }, () => this.handleMonthlyPayment(minimumInterest, this.state.principal));
+handlePrinciple = (totalDebtAmount, minimumInterest) => {
+    const minimumPrinciple = totalDebtAmount * 0.01;
+    this.setState({ principle: +minimumPrinciple.toFixed(2) }, () => this.handleMonthlyPayment(minimumInterest, this.state.principle));
 };
 
 handleInterestHelper = (value) => {
     const minimumInterest = this.calcMinInt(parseFloat(value));
     console.log(this.state.totalDebtAmount);
     this.setState({ interestRate: value });
-    this.setState({ minimumInterest: minimumInterest.toFixed(2) }, () => this.handlePrincipal(this.state.totalDebtAmount, this.state.minimumInterest));
+    this.setState({ minimumInterest: minimumInterest.toFixed(2) }, () => this.handlePrinciple(this.state.totalDebtAmount, this.state.minimumInterest));
     // this.handlePrincipal(this.state.totalDebtAmount);
-    console.log("helper", this.state.principal, minimumInterest)
+    console.log("helper", this.state.principle, minimumInterest)
     // this.handleMonthlyPayment(minimumInterest, this.state.principal);
 }
 
 handleInterest = ({ target: { value } }) => this.handleInterestHelper(value);
 
 
-handleMonthlyPayment = (minimumInterest, minimumPrincipal) => {
+handleMonthlyPayment = (minimumInterest, minimumPrinciple) => {
     if (this.state.totalDebtAmount <= 100) {
         const monthlyPayment = this.state.totalDebtAmount * 1 + this.state.totalDebtAmount * 0.01;
         this.setState({ monthlyPayment: +monthlyPayment.toFixed(2) });
     } else {
-        const monthlyPayment = +minimumInterest + minimumPrincipal;
+        const monthlyPayment = +minimumInterest + minimumPrinciple;
         this.setState({ monthlyPayment: +monthlyPayment.toFixed(2) });
     }
 };
@@ -89,15 +89,21 @@ handlePaymentAmount = (value) => {
     const interest = this.state.minimumInterest;
     const originalLoanAmount = this.state.totalDebtAmount;
     const remainingBalance = Number(this.state.totalDebtAmount) + Number(interest) - Number(value);
+    const newInterest = +(remainingBalance * this.state.interestRate/100/12).toFixed(2)
+    const newPrinciple = +(remainingBalance * .01).toFixed(2)
+    const newMinPayment = (newInterest + newPrinciple).toFixed(2)
     const principlePaid = originalLoanAmount - remainingBalance;
     const paymentInfo = {
     numOfPayments: 0,
-    principal: principlePaid.toFixed(2),
+    principle: principlePaid.toFixed(2),
     interest: interest,
     balance: remainingBalance.toFixed(2),
     };
     this.setState({
         totalDebtAmount: remainingBalance,
+        minimumInterest: newInterest,
+        principle: newPrinciple,
+        monthlyPayment: newMinPayment,
         paymentAmount: parseInt(value),
         paymentList: [...this.state.paymentList, paymentInfo],
     });
@@ -126,7 +132,7 @@ render() {
             </div>
             <div className={style.displayNums}>
                 <MinInterest minimumInterest={this.state.minimumInterest} />
-                <MinPrincipal principal={this.state.principal} />
+                <MinPrinciple principle={this.state.principle} />
                 <MinPayments monthlyPayment={this.state.monthlyPayment} />
             </div>
             </div>

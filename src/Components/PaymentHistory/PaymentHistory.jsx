@@ -27,7 +27,7 @@ class PaymentHistory extends React.Component {
                                 </tr>
                                 {paymentsList.map((item, i) => (
                                     <tr key={item.numOfPayments}>
-                                        <td>{i + 1}</td> <td>{item.principal}</td> <td>{item.interest}</td> <td>{item.balance}</td>
+                                        <td>{i + 1}</td> <td>{item.principle}</td> <td>{item.interest}</td> <td>{item.balance}</td>
                                     </tr>))}
                             </tbody>
                         </table>
