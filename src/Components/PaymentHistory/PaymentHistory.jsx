@@ -16,7 +16,7 @@ class PaymentHistory extends React.Component {
                                         <h5>Number of Payments</h5>
                                     </td>
                                     <td>
-                                        <h5>Principal Paid</h5>
+                                        <h5>Principle Paid</h5>
                                     </td>
                                     <td>
                                         <h5>Interest Paid</h5>
